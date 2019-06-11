@@ -1,0 +1,133 @@
+body {
+  margin-top: 60px;
+}
+
+.page, .alert {
+  display: none;
+}
+
+.navbar-brand img {
+  width: 25px;
+  display: inline-block;
+  margin-top:-2px
+}
+
+.dropNavBtn {
+  font-size: 16px; 
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.glyphicon-unchecked {
+  color: #666
+}
+
+.glyphicon-check {
+  color: rgb(67, 180, 33);
+}
+
+.table thead {
+  background: #aaa;
+}
+
+.table tbody tr:nth-child(odd) {
+  background: #fff;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #d9d9d9;
+}
+
+.table tbody tr:hover {
+  background: rgb(255, 250, 203);
+}
+
+.glyphicon-btns {
+  white-space: nowrap;
+}
+
+.glyphicon-btns .glyphicon {
+  cursor: pointer;
+  margin: 0px 2px
+}
+
+.glyphicon-eye-open {
+  color: #0087CB
+}
+
+.glyphicon-pencil {
+  color: rgb(67, 180, 33);
+}
+
+.glyphicon-remove {
+  color: red
+}
+
+hr {
+  height: 12px;
+  border: 0;
+  box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);	
+  margin: 10px 0px;
+}
+
+.filter-form input[type=text] {
+  width: 100px;
+}
+
+.filter-form input, select {
+  margin-right: 10px;
+}
+
+.ipt-search {
+  width: 150px !important;
+}
+
+@media screen and (max-width:768px) {
+  .filter-form input[type=text] {
+    width: 100% !important;
+  }
+}
+
+#statsContainer {
+  min-width: 310px;
+  max-width: 2000px;
+  height: 400px;
+  margin: 0 auto
+}
+
+@keyframes blinker {  
+  50% { opacity: 0; }
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+.jSonDetailsTbl {
+  width: 100%;
+}
+
+.jSonDetailsTbl td {
+  padding: 5px;
+  word-wrap: break-word;         /* All browsers since IE 5.5+ */
+  overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+}
+
+.jSonDetailsTbl .jSonDetailsLabel {
+  width: 100px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.jSonDetailsTbl td div {
+  word-break: break-all;
+}
+
+.jSonDetailsTbl td div svg {
+  background-color: #FFF;
+}

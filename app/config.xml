@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.ivanvaladares.nodesmsapi" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:vs="http://schemas.microsoft.com/appx/2014/htmlapps">
+    <name>NODE SMS APP</name>
+    <description>NODE SMS APP</description>
+    <author email="ivanvaladares@hotmail.com" href="http://ivanvaladares.com">
+        Ivan Valadares
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="loadUrlTimeoutValue" value="600000" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="Fullscreen" value="False" />
+    <preference name="ShowTitle" value="False" />
+    <preference name="AndroidLaunchMode" value="singleTop" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="BackgroundColor" value="0xffffffff" />
+    <access origin="*" />
+    <allow-navigation href="*" />
+    <allow-intent href="ws://*/*" />
+    <allow-intent href="wss://*/*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="sms:*" />
+    <platform name="android">
+        <preference name="android-targetSdkVersion" value="28" />
+        <allow-intent href="market:*" />
+        <icon density="ldpi" src="res/icons/android/icon-36-ldpi.png" />
+        <icon density="mdpi" src="res/icons/android/icon-48-mdpi.png" />
+        <icon density="hdpi" src="res/icons/android/icon-72-hdpi.png" />
+        <icon density="xhdpi" src="res/icons/android/icon-96-xhdpi.png" />
+        <splash density="land-hdpi" src="res/screens/android/screen-hdpi-landscape.png" />
+        <splash density="land-ldpi" src="res/screens/android/screen-ldpi-landscape.png" />
+        <splash density="land-mdpi" src="res/screens/android/screen-mdpi-landscape.png" />
+        <splash density="land-xhdpi" src="res/screens/android/screen-xhdpi-landscape.png" />
+        <splash density="port-hdpi" src="res/screens/android/screen-hdpi-portrait.png" />
+        <splash density="port-ldpi" src="res/screens/android/screen-ldpi-portrait.png" />
+        <splash density="port-mdpi" src="res/screens/android/screen-mdpi-portrait.png" />
+        <splash density="port-xhdpi" src="res/screens/android/screen-xhdpi-portrait.png" />
+    </platform>
+    <plugin name="cordova-plugin-dialogs" source="npm" spec="1.3.4" />
+    <plugin name="cordova-plugin-whitelist" source="npm" spec="1.3.3" />
+    <plugin name="cordova-sms-plugin" spec="https://github.com/ivanvaladares/cordova-sms-plugin-1" />
+    <plugin name="cordova-plugin-barcodescanner" source="npm" spec="0.7.4" />
+    <plugin name="cordova-plugin-android-permissions" source="npm" spec="1.0.0" />
+    <engine name="android" spec="7.0.0" />
+</widget>

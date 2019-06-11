@@ -1,0 +1,73 @@
+/*
+ *
+ * (C) 2018 Ivan Valadares
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ *  Document   : css
+ *  Author     : Ivan Valadares
+ *  version    : 1.0.0
+ *  Description: Simple stylesheet for the paginator plugin
+ */
+
+.jqpaginateContainer{
+     display:block;
+     text-align:center
+}
+.jqpaginateList{
+    padding:0
+}
+.jqpaginateContainer .jqpaginateList,.jqpaginateContainer li{
+    display:inline-block
+}
+.jqpaginateContainer .jqpaginateLink{
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-decoration:none;
+    line-height:20px;
+    padding:4px 12px;
+    background-color:#ddd;
+    color:#08c;
+    font-size:16px;
+    min-width:16px;
+    float:left;
+    border-top:1px solid #ccc;
+    border-bottom:1px solid #ccc
+}
+.jqpaginateContainer .jqpaginateLink:hover{
+    color:#fff;
+    background-color:#2ae;
+    border-top:1px solid #2ae;
+    border-bottom:1px solid #2ae
+}
+.jqpaginateContainer .jqpaginatePrevious .jqpaginateLink{
+    border-top-left-radius:5px;
+    border-bottom-left-radius:5px;
+    border:1px solid #ccc;
+    font-size:18px;
+    font-weight:700
+}
+.jqpaginateContainer .jqpaginateNext .jqpaginateLink{
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
+    border:1px solid #ccc;
+    font-size:18px;
+    font-weight:700
+}
+.jqpaginateContainer .jqpaginateNext .jqpaginateLink:hover,
+.jqpaginateContainer .jqpaginatePrevious .jqpaginateLink:hover{
+    border:1px solid #2ae
+}
+.jqpaginateContainer .jqpaginateActive .jqpaginateLink,
+.jqpaginateContainer .jqpaginateActive .jqpaginateLink:hover{
+    color:#fff;
+    background-color:#08c;
+    border-top:1px solid #08c;
+    border-bottom:1px solid #08c
+}
+.jqpaginateContainer .jqpaginateDisabled .jqpaginateLink,
+.jqpaginateContainer .jqpaginateDisabled .jqpaginateLink:hover{
+    color:#bbb;
+    background-color:#eee;
+    border:1px solid #ddd
+}

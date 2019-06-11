@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+	<title>Node SMS API</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+	<meta name="mobile-web-app-capable" content="yes">
+	<script type="text/javascript">
+        var appInsights=window.appInsights||function(a){
+          function b(a){c[a]=function(){var b=arguments;c.queue.push(function(){c[a].apply(c,b)})}}var c={config:a},d=document,e=window;setTimeout(function(){var b=d.createElement("script");b.src=a.url||"https://az416426.vo.msecnd.net/scripts/a/ai.0.js",d.getElementsByTagName("script")[0].parentNode.appendChild(b)});try{c.cookie=d.cookie}catch(a){}c.queue=[];for(var f=["Event","Exception","Metric","PageView","Trace","Dependency"];f.length;)b("track"+f.pop());if(b("setAuthenticatedUserContext"),b("clearAuthenticatedUserContext"),b("startTrackEvent"),b("stopTrackEvent"),b("startTrackPage"),b("stopTrackPage"),b("flush"),!a.disableExceptionTracking){f="onerror",b("_"+f);var g=e[f];e[f]=function(a,b,d,e,h){var i=g&&g(a,b,d,e,h);return!0!==i&&c["_"+f](a,b,d,e,h),i}}return c
+          }({
+              instrumentationKey:"<%= process.env.APPLICATION_INSIGHTS_KEY %>"
+          });
+          
+        window.appInsights=appInsights,appInsights.queue&&0===appInsights.queue.length&&appInsights.trackPageView();
+	</script>
+	<style>
+		#app {
+			display: none;
+		}
+
+		.loading {
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			background: #fff;
+		}
+
+		.loader {
+			left: 50%;
+			margin-left: -4em;
+			font-size: 10px;
+			border: .8em solid rgba(218, 219, 223, 1);
+			border-left: .8em solid rgba(58, 166, 165, 1);
+			animation: spin 1.1s infinite linear;
+		}
+
+		.loader,
+		.loader:after {
+			border-radius: 50%;
+			width: 8em;
+			height: 8em;
+			display: block;
+			position: absolute;
+			top: 50%;
+			margin-top: -4.05em;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+	</style>
+	<link rel="stylesheet" href="/css/app.min.css">
+
+</head>
+
+<body>
+	<div class="loading">
+		<div class="loader"></div>
+	</div>
+
+	<div id="app">
+
+		<!-- header -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
+
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a href="#" class="navbar-brand nav-link">
+						<img src="/img/logo.png" alt="Node SMS API" />
+						Node SMS API</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="myNavbar">
+					<ul class="nav navbar-nav">
+						<li>
+							<a href="#applications-page" class="nav-link">Applications</a>
+						</li>
+						<li>
+							<a href="#phones-page" class="nav-link">Phones</a>
+						</li>
+						<li>
+							<a href="#messages-page" class="nav-link">Messages</a>
+						</li>
+						<li>
+							<a href="#about-modal" data-toggle="modal" data-target="#about-modal" class="visible-xs">About</a>
+						</li>
+						<li>
+							<a href="#log-out" class="visible-xs logoutBtn">Log-out</a>
+						</li>
+					</ul>				
+					<div class="nav navbar-nav navbar-right hidden-xs">
+						<div class="dropdown">
+							<button class="dropNavBtn" type="button" id="dropdownMenu1" data-toggle="dropdown">
+								<span class="glyphicon glyphicon-cog"></span>
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+								<li><a href="#about-page" data-toggle="modal" data-target="#about-modal">
+										<span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+								<li><a href="#log-out" class="logoutBtn">
+										<span class="glyphicon glyphicon-log-out"></span> Log-out</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+	</div>
+	</nav>
+	<!-- /header-->
+
+	<!-- stats page -->
+	<div id="stats-page" class="page">
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-12">
+					<span class="btn-filter visible-xs">Filter &bigtriangledown;</span>
+
+					<form id="statsFilterForm" class="form-inline filter-form hidden-xs">
+						<div class="form-group">
+							<label>From</label>
+							<input type="text" id="statsFilterFrom" placeholder="from" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label>To</label>
+							<input type="text" id="statsFilterTo" placeholder="to" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label>Application</label>
+							<select id="statsFilterApplication" class="form-control">
+								<option value="">All</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Filter" class="btn btn-info" />
+						</div>
+					</form>
+
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+
+					<div id="statsContainer"></div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- /stats page -->
+
+	<!-- application page -->
+	<div id="applications-page" class="page">
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-9">
+
+					<span class="btn-filter visible-xs">Filter &bigtriangledown;</span>
+
+					<form id="applicationFilterForm" class="form-inline filter-form hidden-xs">
+						<div class="form-group">
+							<label>Search</label>
+							<input type="text" id="applicationFilterSearch" placeholder="application name"
+								class="form-control ipt-search" />
+						</div>
+						<div class="form-group">
+							<label>Online</label>
+							<select id="applicationFilterActive" class="form-control">
+								<option value="">All</option>
+								<option value="YES">Yes</option>
+								<option value="NO">No</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Filter" class="btn btn-info" />
+						</div>
+					</form>
+
+				</div>
+
+				<div class="col-sm-3">
+					<div class="text-right">
+						<button class="btn btn-primary btnAddApplication">
+							<span class="glyphicon glyphicon-plus"></span> Add new Application
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<table id="tbl_applications" class="table table-striped" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th style="width:40px">Active</th>
+								<th style="width:80px"></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<div id="applications_pagination"></div>
+				</div>
+			</div>
+
+			<div class="modal fade" id="applicationModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">
+								<span>&times;</span>
+							</button>
+							<h4 class="modal-title">Application form</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="alert alert-danger" role="alert">
+								<span class="glyphicon glyphicon-exclamation-sign"></span>
+								<span class="alert-message"></span>
+							</div>
+
+							<form>
+								<input type="hidden" id="applicationId" />
+
+								<div class="form-group">
+									<label for="applicationName">Name</label>
+									<input type="text" class="form-control" id="applicationName" placeholder="Name"
+										maxlength="50" />
+								</div>
+								<div class="form-group">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" id="applicationActive" /> Active
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group text-right">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary" id="btnSaveApplication">Save
+										changes</button>
+								</div>
+
+							</form>
+
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
+
+		</div>
+	</div>
+	<!-- /application page -->
+
+	<!-- phones page -->
+	<div id="phones-page" class="page">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-9">
+
+					<span class="btn-filter visible-xs">Filter &bigtriangledown;</span>
+
+					<form id="phoneFilterForm" class="form-inline filter-form hidden-xs">
+						<div class="form-group">
+							<label>Search</label>
+							<input type="text" id="phoneFilterSearch" placeholder="phone name"
+								class="form-control ipt-search" />
+						</div>
+						<div class="form-group">
+							<label>Online</label>
+							<select id="phoneFilterOnline" class="form-control">
+								<option value="">All</option>
+								<option value="YES">Yes</option>
+								<option value="NO">No</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Active</label>
+							<select id="phoneFilterActive" class="form-control">
+								<option value="">All</option>
+								<option value="YES">Yes</option>
+								<option value="NO">No</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Filter" class="btn btn-info" />
+						</div>
+					</form>
+
+				</div>
+				<div class="col-sm-3">
+					<div class="text-right">
+						<button class="btn btn-primary btnAddPhone">
+							<span class="glyphicon glyphicon-plus"></span> Add new Phone
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<table id="tbl_phones" class="table table-striped" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th style="width:40px;">Online</th>
+								<th style="width:40px">Active</th>
+								<th style="width:80px"></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<div id="phones_pagination"></div>
+				</div>
+			</div>
+
+			<div class="modal fade" id="phoneModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">
+								<span>&times;</span>
+							</button>
+							<h4 class="modal-title">Phone form</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="alert alert-danger" role="alert">
+								<span class="glyphicon glyphicon-exclamation-sign"></span>
+								<span class="alert-message"></span>
+							</div>
+
+							<form>
+								<input type="hidden" id="phoneId" />
+
+								<div class="form-group">
+									<label for="phoneName">Name</label>
+									<input type="text" class="form-control" id="phoneName" placeholder="Name"
+										maxlength="50" />
+								</div>
+								<div class="form-group">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" id="phoneActive" /> Active
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group text-right">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary" id="btnSavePhone">Save
+										changes</button>
+								</div>
+
+							</form>
+
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
+
+		</div>
+	</div>
+	<!-- /phones page -->
+
+	<!-- messages page -->
+	<div id="messages-page" class="page">
+
+		<div class="container-fluid">
+
+
+			<div class="row">
+				<div class="col-md-9">
+
+					<span class="btn-filter visible-xs">Filter &bigtriangledown;</span>
+
+					<form id="messageFilterForm" class="form-inline filter-form hidden-xs">
+						<div class="form-group">
+							<label>Search</label>
+							<input type="text" id="messageFilterSearch" placeholder="phone or message"
+								class="form-control ipt-search" />
+						</div>
+						<div class="form-group">
+							<label>From</label>
+							<input type="text" id="messageFilterFrom" placeholder="from" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label>To</label>
+							<input type="text" id="messageFilterTo" placeholder="to" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label>Status</label>
+							<select id="messageFilterStatus" class="form-control">
+								<option value="">All</option>
+								<option value="FAILED">Failed</option>
+								<option value="QUEUED">Queued</option>
+								<option value="SENT">Sent</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Filter" class="btn btn-info" />
+						</div>
+					</form>
+
+				</div>
+				<div class="col-md-3 text-right">
+					<button class="btn btn-primary btnAddMessage">
+						<span class="glyphicon glyphicon-plus"></span> Add new Message
+					</button>
+				</div>
+			</div>
+
+
+
+			<div class="row">
+				<div class="col-sm-12">
+					<hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<table id="tbl_messages" class="table table-striped" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>Phone</th>
+								<th style="width:200px;">Date</th>
+								<th style="width:40px">Sent</th>
+								<th style="width:80px"></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<div id="messages_pagination"></div>
+				</div>
+			</div>
+
+			<div class="modal fade" id="messageModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">
+								<span>&times;</span>
+							</button>
+							<h4 class="modal-title">Message form</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="alert alert-danger" role="alert">
+								<span class="glyphicon glyphicon-exclamation-sign"></span>
+								<span class="alert-message"></span>
+							</div>
+
+							<form>
+								<div class="form-group">
+									<label>Application</label>
+									<select id="messageApplication" class="form-control">
+										<option value="">All</option>
+									</select>
+								</div>
+
+								<div class="form-group">
+									<label for="messagePhone">Phone number</label>
+									<input type="text" class="form-control" id="messagePhone"
+										placeholder="Phone number" />
+								</div>
+
+								<div class="form-group">
+									<label for="messagePhone">Message</label>
+									<textarea class="form-control" id="messageBody" placeholder="Message"
+										rows="4"></textarea>
+								</div>
+
+								<div class="form-group text-right">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary" id="btnSaveMessage">Send
+										message</button>
+								</div>
+
+							</form>
+
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
+
+		</div>
+	</div>
+	<!-- /message page -->
+
+	</div>
+
+	<!-- login modal -->
+	<div class="modal fade" id="login-modal" role="modal">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Login</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="alert alert-danger" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign"></span>
+						<span class="alert-message"></span>
+					</div>
+
+					<form>
+
+						<div class="form-group">
+							<label for="userName">Username</label>
+							<input type="text" class="form-control" id="userName" placeholder="Username"
+								maxlength="50" />
+						</div>
+
+						<div class="form-group">
+							<label for="userPass">Password</label>
+							<input type="password" class="form-control" id="userPass" placeholder="Password"
+								maxlength="50" />
+						</div>
+
+						<div class="form-group text-right">
+							<input type="submit" class="btn btn-success" id="btn-login-ok" value="OK" />
+						</div>
+
+						<div class="text-center">
+							<a href="#" id="btn-new-user">create a free new user</a>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /login modal -->
+
+	<!-- new user modal -->
+	<div class="modal fade" id="newUser-modal" role="modal">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">New User</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="alert alert-danger" role="alert">
+						<span class="glyphicon glyphicon-exclamation-sign"></span>
+						<span class="alert-message"></span>
+					</div>
+
+					<form>
+
+						<div class="form-group">
+							<label for="userName">Username</label>
+							<input type="text" class="form-control" id="newUser_userName" placeholder="Username"
+								maxlength="50" />
+						</div>
+
+						<div class="form-group">
+							<label for="userPass">Password</label>
+							<input type="password" class="form-control" id="newUser_userPass" placeholder="Password"
+								maxlength="50" />
+						</div>
+
+						<div class="form-group">
+							<label for="userPass">Repeat password</label>
+							<input type="password" class="form-control" id="newUser_userPassRepeated"
+								placeholder="Password" maxlength="50" />
+						</div>
+
+						<div class="form-group text-right">
+							<input type="button" class="btn btn-default" id="btn-cancel-newUser" value="Cancel" />
+							<input type="submit" class="btn btn-success" id="btn-newUser-ok" value="OK" />
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /new user modal -->
+
+	<!-- about modal -->
+	<div class="modal fade" id="about-modal" tabindex="-1" role="modal">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+					<h4 class="modal-title">About</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="container-fluid">
+
+						<div class="row">
+							<div class="col-md-12">
+
+								<h3>Tech stack</h3>
+
+								<b>Frontend</b>
+								<ul>
+									<li><a href="https://getbootstrap.com/" target="new">Bootstrap</a><span> - front-end
+											framework</span></li>
+									<li><a href="http://ejs.co" target="new">EJS</a><span> - embedded javascript
+											templates</span></li>
+									<li><a href="https://jquery.com/" target="new">jQuery</a><span> - front-end
+											javascript library</span></li>
+									<li><a href="https://www.highcharts.com/" target="new">Highcharts</a><span> -
+											interactive javascript charts</span></li>
+									<li><a href="http://momentjs.com/" target="new">Moment</a><span> - javascript date
+											and time library</span></li>
+								</ul>
+
+								<b>Backend</b>
+								<ul>
+									<li><a href="http://expressjs.com/" target="new">Express</a><span> - backend
+											framework for node</span></li>
+									<li><a href="https://express-validator.github.io/docs/" target="new">Express
+											validator</a><span> - validation and sanitization middleware</span></li>
+									<li><a href="https://github.com/pgroot/express-swagger-generator"
+											target="new">Express swagger generator</a><span> - API documentation
+											library</span></li>
+									<li><a href="https://github.com/louischatriot/nedb/" target="new">NeDB</a><span> -
+											the javascript database</span></li>
+									<li><a href="https://github.com/auth0/node-jsonwebtoken/"
+											target="new">Node-jsonwebtoken</a><span> - authorization javascript
+											library</span></li>
+									<li><a href="http://momentjs.com/" target="new">Moment</a><span> - javascript date
+											and time library</span></li>
+									<li><a href="https://github.com/websockets/ws/" target="new">WS</a><span> -
+											websocket module for node</span></li>
+
+								</ul>
+
+								<b>Android App</b>
+								<ul>
+									<li><a href="https://phonegap.com/" target="new">Phonegap</a><span> - cross-platform
+											mobile framework</span></li>
+									<li><a href="https://jquery.com/" target="new">jQuery</a><span> - front-end
+											javascript library</span></li>
+								</ul>
+
+								<b>Tools</b>
+								<ul>
+									<li><a href="https://babeljs.io/" target="new">Babel</a><span> - javascript
+											transpiler</span></li>
+									<li><a href="https://gulpjs.io/" target="new">Gulp</a><span> - streaming build
+											system</span></li>
+								</ul>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+				<div class="modal-footer">
+
+					<p class="text-center">Developed by <a href="https://www.linkedin.com/in/ivanvaladares/"
+							target="new">Ivan Valadares</a></p>
+					<p class="text-center">Get the souce code at <a href="https://github.com/ivanvaladares/node-sms-api"
+							target="new">github.com/ivanvaladares/node-sms-api</a></p>
+
+					<p class="text-center">Visit our <a href="/privacy_policy.html">Privacy Policy</a> and
+						<a href="/terms_and_conditions.html">Terms &amp; Conditions</a></p>
+
+					<hr />
+
+					<p class="text-center"><small><i>This is a test environment and all data can be erased at any time
+								without notice!</i></small></p>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /about modal -->
+
+	<!-- qr phone modal -->
+	<div class="modal fade" id="qr-modal" tabindex="-1" role="modal">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+					<h4 class="modal-title">Phone token</h4>
+				</div>
+				<div class="modal-body text-center">
+
+					<div id="qrCodeDiv"></div>
+
+					<br />
+
+					<small>Use our <a href="#" id="appLinkDownload">Android APP</a> to scan this code.</small>
+
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /qr phone modal -->
+
+	<!-- qr download app modal -->
+	<div class="modal fade" id="qr-downloadApp" tabindex="-1" role="modal">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+					<h4 class="modal-title">Android APP download</h4>
+				</div>
+				<div class="modal-body text-center">
+
+					<div id="qrDownloadAppCodeDiv"></div>
+
+					<br />
+
+					<a href="#" id="apkLink">Download APK</a>
+
+					<br />
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /qr download app modal -->
+
+</body>
+<script src="/js/app.min.js"></script>
+
+</html>

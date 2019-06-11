@@ -1,0 +1,36 @@
+.tx-editor-wrapper {
+  position: relative;
+}
+.tx-editor-wrapper .tx-editor.expanded {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90%;
+  height: 90%;
+  z-index: 500;
+}
+.tx-editor-wrapper .tx-editor {
+    height: 220px;
+}
+.tx-editor-wrapper .tx-editor .tx-icon, .tx-editor-wrapper .tx-editor .tx-clear-icon {
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  width: 18px;
+  height: 16px;
+  cursor: pointer;
+  z-index: 3;
+}
+.tx-editor-wrapper .tx-editor .tx-clear-icon {
+  right: 40px;
+}
+.tx-editor-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 2;
+  opacity: 0;
+}

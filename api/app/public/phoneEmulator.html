@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <title>NODE SMS API - Phone emulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+
+</head>
+
+<body>
+
+    <form>
+        Token:
+        <input type="text" name="token" />
+        <input type="button" id="btnConnect" value="connect" onclick="connect()" />
+
+        <hr />
+
+        <textarea rows="20" cols="100" id="txtOutput"></textarea>
+
+        <hr />
+        Set send:
+        <input type="text" name="messageId" />
+        <input type="button" id="btnSetSent" value="send" onclick="setSent()" />
+
+    </form>
+
+    <script>
+
+        var wsSocket = null;
+
+        function connect() {
+
+            var address = ((location.protocol.toLowerCase().indexOf("https") === 0) ? "wss://" : "ws://") + location.host;
+            address += "?token=" + document.forms[0].token.value;
+
+            wsSocket = new WebSocket(address);
+
+            wsSocket.onopen = () => {
+                outputToText("connected");
+            };
+
+            wsSocket.onmessage = (event) => {
+                outputToText(event.data);
+            };
+
+            wsSocket.onerror = (err, e) => {
+                outputToText(e, err);
+            };
+
+            wsSocket.onclose = (event) => {
+                let canReconnect = true;
+
+                if (event.code){
+                    if (event.code === 4400) {
+                        outputToText("Phone inactive");
+                        canReconnect = false;
+                    }
+                    if (event.code === 4401) {
+                        outputToText("Unauthorized");
+                        canReconnect = false;
+                    }
+                    if (event.code === 4409) {
+                        outputToText("Phone is already connected");
+                        canReconnect = false;
+                    }
+                }
+
+                if (canReconnect) {
+                    // Try to reconnect in 1 seconds
+                    outputToText("reconnecting...");
+                    setTimeout(connect, 1000);
+                }
+            };
+
+        }
+
+        function setSent() {
+
+            var token = document.forms[0].token.value;
+            var messageId = document.forms[0].messageId.value;
+
+            var opts = {
+                method: 'POST',
+                headers: {
+                    "authorization": token
+                }
+            };
+
+            var data = {
+                event: "setSent",
+                messageId: messageId
+            }
+
+            wsSocket.send(JSON.stringify(data));
+
+        }
+
+        function outputToText(text) {
+            var oldVal = document.forms[0].txtOutput.value;
+            document.forms[0].txtOutput.value = text + "\n----------------------------\n" + oldVal;
+        }
+
+    </script>
+
+</body>
+
+</html>
