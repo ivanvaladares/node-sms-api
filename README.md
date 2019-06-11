@@ -28,7 +28,7 @@ ENCRYPTION_KEY            # Key used to encryption
 TOKEN_KEY                 # Key used to sign jwt tokens
 ```
 
-##App configuration
+## App configuration
 ```
 APPLICATION_INSIGHTS_KEY  # Azure application insights instrumentation key defined in the index.html
 ```
