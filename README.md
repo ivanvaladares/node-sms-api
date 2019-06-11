@@ -4,7 +4,8 @@ Node and Cordova projects to create a SMS Gateway using android phones.
 ![How it works](assets/flow.png?raw=true "Node-SMS-API and Node-SMS-APP")
 
 ## Is there a live example?
-You can go to https://node-sms-api.herokuapp.com/admin and register your applications and phones. This website is for test only. All data will be erased without any notice. There is also an API to send SMS and get phones and messages status at: http://node-sms-api.herokuapp.com/api-docs
+You can go to https://node-sms-api.herokuapp.com/admin and register your applications and phones. This website is for test only. All data can be erased at any time without notice! 
+There is also an API to send SMS and get phones and messages status at: http://node-sms-api.herokuapp.com/api-docs
 
 ## About the app
 Actually, there are two separated apps. The Cordova APP and the Backend (in Node/Express).
@@ -20,7 +21,6 @@ Actually, there are two separated apps. The Cordova APP and the Backend (in Node
 1. Navigate to the `app` directory.
 2. Run `phonegap build android` or use Adobe Phonegap build online at https://build.phonegap.com
 
-
 ## Backend .env configuration
 ```
 APPLICATION_INSIGHTS_KEY  # Azure application insights instrumentation key
@@ -32,6 +32,8 @@ TOKEN_KEY                 # Key used to sign jwt tokens
 ```
 APPLICATION_INSIGHTS_KEY  # Azure application insights instrumentation key defined in the index.html
 ```
+You will have to change Android's SMS Limit using ADB. Know more at: https://www.thecustomdroid.com/change-android-sms-limit-without-root/
+
 
 ## Donations
 
