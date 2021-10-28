@@ -34,11 +34,3 @@ APPLICATION_INSIGHTS_KEY  # Azure application insights instrumentation key defin
 ```
 You will have to change Android's SMS Limit using ADB. Know more at: https://www.thecustomdroid.com/change-android-sms-limit-without-root/
 
-
-## Donations
-
-Please consider donating some if your app is successful or you learned something valuable here.
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/ivanvaladares/10)
-
-Keep in mind that I am maintaining this repository on my free time so thank you for considering a donation. :+1:
